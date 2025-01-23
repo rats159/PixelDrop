@@ -1,6 +1,3 @@
-using OpenTK.Platform;
-using OpenTK.Windowing.Common.Input;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 using PixelDrop.Input;
 using PixelDrop.Pixels.Rules;
 using PixelDrop.Renderer;
@@ -9,102 +6,127 @@ namespace PixelDrop.Pixels;
 
 public class World
 {
-    public const int Width = 100;
-    public const int Height = 100;
-    public const int PixelSize = 9;
-    
-    private Pixel[] _newGrid = new Pixel[World.Height*World.Width];
-    private Pixel[] _oldGrid = new Pixel[World.Height*World.Width];
-    private Dictionary<PixelType, List<Pixel>> ByType { get; } = [];
+    public const int WIDTH = 400;
+    public const int HEIGHT = 400;
+    public const int PIXEL_SIZE = 2;
+
+    private Pixel[] _newGrid = new Pixel[World.HEIGHT * World.WIDTH];
+    private Pixel[] _oldGrid = new Pixel[World.HEIGHT * World.WIDTH];
     private PixelRenderer? _pixelRenderer;
 
 
     public World()
     {
-        for (int i = 0; i < World.Height; i++)
+        for (int i = 0; i < World.HEIGHT; i++)
         {
-            for (int j = 0; j < World.Width; j++)
+            for (int j = 0; j < World.WIDTH; j++)
             {
-                this._newGrid[i*World.Width+j] = new((j, i), PixelType.Air);
-                this._oldGrid[i*World.Width+j] = new((j, i), PixelType.Air);
+                this._newGrid[i * World.WIDTH + j] = new((j, i), PixelType.Air);
+                this._oldGrid[i * World.WIDTH + j] = new((j, i), PixelType.Air);
             }
         }
-        
-        for(int i = 0; i < 11; i++)
+
+        for (int i = 0; i < 11; i++)
         {
-            this.Spawn(45, i*2, PixelType.Sand);
+            this.Spawn(45, i * 2, PixelType.Sand);
         }
     }
 
     public void Spawn(int x, int y, PixelType type)
     {
-        if (x < 0 || x >= World.Width || y < 0 || y >= World.Height) return;
-        if (this._newGrid[y * World.Width + x].Type != PixelType.Air) return;
-        
+        if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
+        if (this._newGrid[y * World.WIDTH + x].Type != PixelType.Air) return;
+
         Pixel px = new((x, y), type);
-        this._newGrid[y * World.Width + x] = px;
-        this._oldGrid[y * World.Width + x] = px;
+        this._newGrid[y * World.WIDTH + x] = px;
+        this._oldGrid[y * World.WIDTH + x] = px;
+    }
 
-        if (type == PixelType.Air) return;
-
-        if (!this.ByType.TryGetValue(type, out List<Pixel>? list))
-        {
-            list = [];
-            this.ByType[type] = list;
-        }
-
-        list.Add(px);
+    private void Unset(int x, int y)
+    {
+        if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
+        if (this._newGrid[y * World.WIDTH + x].Type == PixelType.Air) return;
+        
+        this._oldGrid[y * World.WIDTH + x] = new((x, y), PixelType.Air);
     }
 
     public void Swap(int x1, int y1, int x2, int y2)
     {
-        (this._oldGrid[y1 * World.Width + x1], this._oldGrid[y2 * World.Width + x2]) = (this._oldGrid[y2 * World.Width + x2], this._oldGrid[y1 * World.Width + x1]);
-        this._oldGrid[y1 * World.Width + x1].PutAt(x1, y1);
-        this._oldGrid[y2 * World.Width+x2].PutAt(x2, y2);
+        (this._oldGrid[y1 * World.WIDTH + x1], this._oldGrid[y2 * World.WIDTH + x2]) = (
+            this._oldGrid[y2 * World.WIDTH + x2], this._oldGrid[y1 * World.WIDTH + x1]);
+        this._oldGrid[y1 * World.WIDTH + x1].PutAt(x1, y1);
+        this._oldGrid[y2 * World.WIDTH + x2].PutAt(x2, y2);
     }
 
     public Pixel? Get(int x, int y)
     {
-        if (x < 0 || x >= World.Width || y < 0 || y >= World.Height) return null;
-        return this._newGrid[y *World.Width + x];
+        if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return null;
+        return this._newGrid[y * World.WIDTH + x];
     }
 
     public void Tick()
     {
-        if (Mouse.State.IsButtonDown(Mouse.Left))
+        DateTime start = DateTime.Now;
+        if (Mouse.State.IsButtonDown(Mouse.LEFT))
         {
-            int x = (int) Mouse.State.X / World.PixelSize;
-            int y = (int) Mouse.State.Y / World.PixelSize;
-            this.Spawn(x,y,PixelType.Sand);
+            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
+            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
+            this.Spawn(x, y, PixelType.Sand);
         }
-        
-        if (Mouse.State.IsButtonDown(Mouse.Right))
+
+        if (Mouse.State.IsButtonDown(Mouse.RIGHT))
         {
-            int x = (int) Mouse.State.X / World.PixelSize;
-            int y = (int) Mouse.State.Y / World.PixelSize;
-            this.Spawn(x,y,PixelType.Water);
+            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
+            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
+            this.Spawn(x, y, PixelType.Water);
         }
-        
-        for (int y = 0; y < World.Height; y++)
+
+        if (Mouse.State.IsButtonDown(Mouse.MIDDLE))
         {
-            for (int x = 0; x < World.Width; x++)
+            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
+            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
+            this.Spawn(x, y, PixelType.SandSpawner);
+        }
+
+        if (Mouse.State.IsButtonDown(Mouse.BACK))
+        {
+            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
+            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
+            this.Spawn(x, y, PixelType.WaterSpawner);
+        }
+
+        if (Mouse.State.IsButtonDown(Mouse.FORWARD))
+        {
+            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
+            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
+            this.Unset(x, y);
+        }
+
+        for (int y = 0; y < World.HEIGHT; y++)
+        {
+            for (int x = 0; x < World.WIDTH; x++)
             {
-                Pixel pixel = this._newGrid[y * World.Width + x];
+                Pixel pixel = this._newGrid[y * World.WIDTH + x];
                 foreach (PixelRule rule in pixel.Type.Rules)
                 {
                     rule(x, y, this);
                 }
             }
-        }   
+        }
 
         this._newGrid = this._oldGrid;
         this._oldGrid = (Pixel[])this._oldGrid.Clone();
+        DateTime end = DateTime.Now;
+        Console.WriteLine($"All computation done in {(end - start).TotalMilliseconds}ms");
     }
 
     public void Render()
     {
+        DateTime start = DateTime.Now;
         this._pixelRenderer ??= new(new("Resources/shaders/shader.vert", "Resources/shaders/shader.frag"));
-        this._pixelRenderer.Render(this.ByType);
+        this._pixelRenderer.Render(this._newGrid);
+        DateTime end = DateTime.Now;
+        Console.WriteLine($"All rendering done in {(end - start).TotalMilliseconds}ms");
     }
 
     public void Dispose()
