@@ -2,14 +2,14 @@ using OpenTK.Graphics.OpenGL;
 
 namespace PixelDrop.Renderer;
 
-public class Quad
+public struct Quad
 {
     private readonly float[] _vertices =
-    [
-        0f, 0f,
-        1f, 0f,
-        0f, 1f,
-        1f, 1f,
+    [   // Pos      // UV
+        -1f, -1f,   0,1,
+        -1f,  1f,   0,0,
+         1f, -1f,   1,1,
+         1f,  1f,   1,0
     ];
 
     public Quad()
@@ -22,20 +22,9 @@ public class Quad
         GL.BufferData(BufferTarget.ArrayBuffer, this._vertices.Length * sizeof(float), this._vertices,
             BufferUsage.StaticDraw);
 
-        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
-        GL.EnableVertexAttribArray(0);
-
-        int eboId = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboId);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, this.Indices.Length * sizeof(uint), this.Indices,
-            BufferUsage.StaticDraw);
+        GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
+        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 4 * sizeof(float), 2 * sizeof(float));
     }
 
     public int VaoId { get; }
-
-    public uint[] Indices { get; } =
-    [
-        2, 1, 0,
-        2, 3, 1
-    ];
 }

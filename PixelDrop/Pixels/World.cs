@@ -10,8 +10,8 @@ public class World
     public const int HEIGHT = 400;
     public const int PIXEL_SIZE = 2;
 
-    private Pixel[] _newGrid = new Pixel[World.HEIGHT * World.WIDTH];
-    private Pixel[] _oldGrid = new Pixel[World.HEIGHT * World.WIDTH];
+    private PixelType[] _newGrid = new PixelType[World.HEIGHT * World.WIDTH];
+    private PixelType[] _oldGrid = new PixelType[World.HEIGHT * World.WIDTH];
     private PixelRenderer? _pixelRenderer;
 
 
@@ -21,8 +21,8 @@ public class World
         {
             for (int j = 0; j < World.WIDTH; j++)
             {
-                this._newGrid[i * World.WIDTH + j] = new((j, i), PixelType.Air);
-                this._oldGrid[i * World.WIDTH + j] = new((j, i), PixelType.Air);
+                this._newGrid[i * World.WIDTH + j] = PixelType.Air;
+                this._oldGrid[i * World.WIDTH + j] = PixelType.Air;
             }
         }
 
@@ -35,30 +35,27 @@ public class World
     public void Spawn(int x, int y, PixelType type)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
-        if (this._newGrid[y * World.WIDTH + x].Type != PixelType.Air) return;
+        if (this._newGrid[y * World.WIDTH + x] != PixelType.Air) return;
 
-        Pixel px = new((x, y), type);
-        this._newGrid[y * World.WIDTH + x] = px;
-        this._oldGrid[y * World.WIDTH + x] = px;
+        this._newGrid[y * World.WIDTH + x] = type;
+        this._oldGrid[y * World.WIDTH + x] = type;
     }
 
     private void Unset(int x, int y)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
-        if (this._newGrid[y * World.WIDTH + x].Type == PixelType.Air) return;
-        
-        this._oldGrid[y * World.WIDTH + x] = new((x, y), PixelType.Air);
+        if (this._newGrid[y * World.WIDTH + x] == PixelType.Air) return;
+
+        this._oldGrid[y * World.WIDTH + x] = PixelType.Air;
     }
 
     public void Swap(int x1, int y1, int x2, int y2)
     {
         (this._oldGrid[y1 * World.WIDTH + x1], this._oldGrid[y2 * World.WIDTH + x2]) = (
             this._oldGrid[y2 * World.WIDTH + x2], this._oldGrid[y1 * World.WIDTH + x1]);
-        this._oldGrid[y1 * World.WIDTH + x1].PutAt(x1, y1);
-        this._oldGrid[y2 * World.WIDTH + x2].PutAt(x2, y2);
     }
 
-    public Pixel? Get(int x, int y)
+    public PixelType? Get(int x, int y)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return null;
         return this._newGrid[y * World.WIDTH + x];
@@ -106,8 +103,8 @@ public class World
         {
             for (int x = 0; x < World.WIDTH; x++)
             {
-                Pixel pixel = this._newGrid[y * World.WIDTH + x];
-                foreach (PixelRule rule in pixel.Type.Rules)
+                PixelType pixel = this._newGrid[y * World.WIDTH + x];
+                foreach (PixelRule rule in pixel.Rules)
                 {
                     rule(x, y, this);
                 }
@@ -115,7 +112,7 @@ public class World
         }
 
         this._newGrid = this._oldGrid;
-        this._oldGrid = (Pixel[])this._oldGrid.Clone();
+        this._oldGrid = (PixelType[])this._oldGrid.Clone();
         DateTime end = DateTime.Now;
         Console.WriteLine($"All computation done in {(end - start).TotalMilliseconds}ms");
     }

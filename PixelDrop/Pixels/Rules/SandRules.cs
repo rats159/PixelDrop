@@ -2,24 +2,24 @@ namespace PixelDrop.Pixels.Rules;
 
 public static class SandRules
 {
-    public static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water];
+    private static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water];
 
     public static void Fall(int x, int y, World world)
     {
-        Pixel? below = world.Get(x, y + 1);
-        if (SandRules.Fallthrough.Contains(below?.Type))
-        {
-            world.Swap(x, y, x, y + 1);
-        }
+        PixelType? below = world.Get(x, y + 1);
+
+        if (below == null || !SandRules.CanFallthrough(below)) return;
+
+        world.Swap(x, y, x, y + 1);
     }
 
     public static void Pile(int x, int y, World world)
     {
-        Pixel? leftDown = world.Get(x - 1, y + 1);
-        Pixel? rightDown = world.Get(x + 1, y + 1);
+        PixelType? leftDown = world.Get(x - 1, y + 1);
+        PixelType? rightDown = world.Get(x + 1, y + 1);
 
-        bool canGoLeft = SandRules.Fallthrough.Contains(leftDown?.Type);
-        bool canGoRight = SandRules.Fallthrough.Contains(rightDown?.Type);
+        bool canGoLeft = leftDown != null && SandRules.CanFallthrough(leftDown);
+        bool canGoRight = rightDown != null && SandRules.CanFallthrough(rightDown);
 
         if (!canGoLeft && !canGoRight) return;
 
@@ -31,5 +31,15 @@ public static class SandRules
         };
 
         world.Swap(x, y, x + offset, y + 1);
+    }
+
+    private static bool CanFallthrough(PixelType type)
+    {
+        for (int i = 0; i < SandRules.Fallthrough.Length; i++)
+        {
+            if (SandRules.Fallthrough[i] == type) return true;
+        }
+
+        return false;
     }
 }

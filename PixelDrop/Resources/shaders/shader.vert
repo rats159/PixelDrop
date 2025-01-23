@@ -1,11 +1,11 @@
 #version 330 core
 layout (location = 0) in vec2 aPosition;
+layout (location = 1) in vec2 aUV;
 
-uniform mat4 u_Transformation;
-uniform mat4 u_Proj;
-uniform mat4 u_View;
+out vec2 f_UV;
 
 void main()
 {
-    gl_Position = u_Proj * u_View * u_Transformation * vec4(aPosition, 0.5,1.0);
+    f_UV = aUV;
+    gl_Position = vec4(aPosition, 0.5,1.0);
 }

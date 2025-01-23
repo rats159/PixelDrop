@@ -4,11 +4,11 @@ public static class WaterRules
 {
     public static void Flow(int x, int y, World world)
     {
-        Pixel? left = world.Get(x - 1, y);
-        Pixel? right = world.Get(x + 1, y);
+        PixelType? left = world.Get(x - 1, y);
+        PixelType? right = world.Get(x + 1, y);
 
-        bool canGoLeft = left?.Type == PixelType.Air;
-        bool canGoRight = right?.Type == PixelType.Air;
+        bool canGoLeft = left != null && left == PixelType.Air;
+        bool canGoRight = right != null && right == PixelType.Air;
 
         if (!canGoLeft && !canGoRight) return;
 
