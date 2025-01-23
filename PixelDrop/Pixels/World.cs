@@ -63,7 +63,6 @@ public class World
 
     public void Tick()
     {
-        DateTime start = DateTime.Now;
         if (Mouse.State.IsButtonDown(Mouse.LEFT))
         {
             int x = (int)Mouse.State.X / World.PIXEL_SIZE;
@@ -113,17 +112,12 @@ public class World
 
         this._newGrid = this._oldGrid;
         this._oldGrid = (PixelType[])this._oldGrid.Clone();
-        DateTime end = DateTime.Now;
-        Console.WriteLine($"All computation done in {(end - start).TotalMilliseconds}ms");
     }
 
     public void Render()
     {
-        DateTime start = DateTime.Now;
         this._pixelRenderer ??= new(new("Resources/shaders/shader.vert", "Resources/shaders/shader.frag"));
         this._pixelRenderer.Render(this._newGrid);
-        DateTime end = DateTime.Now;
-        Console.WriteLine($"All rendering done in {(end - start).TotalMilliseconds}ms");
     }
 
     public void Dispose()
