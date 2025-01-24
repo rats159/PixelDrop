@@ -8,7 +8,7 @@ namespace PixelDrop.Pixels;
 
 public class World
 {
-    public const int PIXEL_SIZE = 10;
+    public const int PIXEL_SIZE = 2;
     public const int WIDTH = 800 / World.PIXEL_SIZE;
     public const int HEIGHT = 800 / World.PIXEL_SIZE;
 
