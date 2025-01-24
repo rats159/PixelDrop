@@ -8,6 +8,7 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
 {
     public static readonly PixelType Sand = new((255, 255, 0), "sand", [SandRules.Fall, SandRules.Pile]);
     public static readonly PixelType Water = new((0, 0, 255), "water", [SandRules.Fall, WaterRules.Flow]);
+    public static readonly PixelType Erase = new((255, 255, 255), "erase", [EraseRules.Erase]);
 
     public static readonly PixelType SandSpawner =
         new((255, 255, 255), "sand_spawner", [SpawnerRules.MakeSpawner(PixelType.Sand)]);
