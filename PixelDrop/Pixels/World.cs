@@ -6,17 +6,29 @@ namespace PixelDrop.Pixels;
 
 public class World
 {
-    public const int WIDTH = 400;
-    public const int HEIGHT = 400;
-    public const int PIXEL_SIZE = 2;
+    public const int PIXEL_SIZE = 10;
+    public const int WIDTH = 800 / World.PIXEL_SIZE;
+    public const int HEIGHT = 800 / World.PIXEL_SIZE;
 
     private PixelType[] _newGrid = new PixelType[World.HEIGHT * World.WIDTH];
     private PixelType[] _oldGrid = new PixelType[World.HEIGHT * World.WIDTH];
     private PixelRenderer? _pixelRenderer;
 
+    private int _pixelIndex;
+    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed];
+
 
     public World()
     {
+        Mouse.RegisterScroll(delta =>
+        {
+            int numPixelTypes = this._pixelTypes.Length;
+            this._pixelIndex += delta;
+            
+            // Python-style modulo, where negative indices wrap around;
+            this._pixelIndex = (this._pixelIndex % numPixelTypes + numPixelTypes) % numPixelTypes;
+            Console.WriteLine(this._pixelIndex);
+        });
         for (int i = 0; i < World.HEIGHT; i++)
         {
             for (int j = 0; j < World.WIDTH; j++)
@@ -24,11 +36,6 @@ public class World
                 this._newGrid[i * World.WIDTH + j] = PixelType.Air;
                 this._oldGrid[i * World.WIDTH + j] = PixelType.Air;
             }
-        }
-
-        for (int i = 0; i < 11; i++)
-        {
-            this.Spawn(45, i * 2, PixelType.Sand);
         }
     }
 
@@ -67,31 +74,10 @@ public class World
         {
             int x = (int)Mouse.State.X / World.PIXEL_SIZE;
             int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
-            this.Spawn(x, y, PixelType.Sand);
+            this.Spawn(x, y, this._pixelTypes[this._pixelIndex]);
         }
-
+        
         if (Mouse.State.IsButtonDown(Mouse.RIGHT))
-        {
-            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
-            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
-            this.Spawn(x, y, PixelType.Water);
-        }
-
-        if (Mouse.State.IsButtonDown(Mouse.MIDDLE))
-        {
-            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
-            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
-            this.Spawn(x, y, PixelType.SandSpawner);
-        }
-
-        if (Mouse.State.IsButtonDown(Mouse.BACK))
-        {
-            int x = (int)Mouse.State.X / World.PIXEL_SIZE;
-            int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
-            this.Spawn(x, y, PixelType.WaterSpawner);
-        }
-
-        if (Mouse.State.IsButtonDown(Mouse.FORWARD))
         {
             int x = (int)Mouse.State.X / World.PIXEL_SIZE;
             int y = (int)Mouse.State.Y / World.PIXEL_SIZE;
@@ -111,7 +97,7 @@ public class World
         }
 
         this._newGrid = this._oldGrid;
-        this._oldGrid = (PixelType[])this._oldGrid.Clone();
+        this._oldGrid = (PixelType[])this._oldGrid.Clone(); // TODO: Surely there's a better way
     }
 
     public void Render()

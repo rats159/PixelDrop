@@ -15,6 +15,7 @@ public class Window(int width, int height)
 
     protected override void OnLoad()
     {
+        Mouse.Init(this);
         base.OnLoad();
 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -42,5 +43,10 @@ public class Window(int width, int height)
         base.OnFramebufferResize(e);
 
         GL.Viewport(0, 0, e.Width, e.Height);
+    }
+
+    public void AddScroll(Action<MouseWheelEventArgs> cb)
+    {
+        this.MouseWheel += cb;
     }
 }
