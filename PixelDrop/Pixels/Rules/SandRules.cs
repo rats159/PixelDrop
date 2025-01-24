@@ -2,7 +2,7 @@ namespace PixelDrop.Pixels.Rules;
 
 public static class SandRules
 {
-    private static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water];
+    private static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water,PixelType.Erase, ];
 
     public static void Fall(int x, int y, World world)
     {

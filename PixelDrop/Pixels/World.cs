@@ -16,7 +16,7 @@ public class World
     private PixelRenderer? _pixelRenderer;
 
     private int _pixelIndex;
-    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed];
+    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed,PixelType.Static,PixelType.Decay,  ];
 
     private int _brushSize = 1;
 
@@ -76,7 +76,6 @@ public class World
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
 
-        this._newGrid[y * World.WIDTH + x] = type;
         this._oldGrid[y * World.WIDTH + x] = type;
     }
 
@@ -113,7 +112,11 @@ public class World
         {
             for (int drawY = y; drawY < y + this._brushSize; drawY++)
             {
-                this.Replace(drawX - this._brushSize/2, drawY - this._brushSize/2, PixelType.Erase);
+                int arrX = drawX - this._brushSize / 2;
+                int arrY = drawY - this._brushSize / 2;
+                if (arrX < 0 || arrX >= World.WIDTH || arrY < 0 || arrY >= World.HEIGHT) continue;
+
+                this._newGrid[arrY * World.WIDTH + arrX] = PixelType.Erase;
             }
         }
     }
