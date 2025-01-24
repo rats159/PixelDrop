@@ -16,7 +16,7 @@ public class World
     private PixelRenderer? _pixelRenderer;
 
     private int _pixelIndex;
-    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed,PixelType.Static,PixelType.Decay,  ];
+    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed,PixelType.Static,PixelType.Decay, PixelType.Bricks,  ];
 
     private int _brushSize = 1;
 

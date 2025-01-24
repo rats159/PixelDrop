@@ -23,4 +23,5 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
     public static readonly PixelType SeaweedCap = new((0, 64, 0), "seaweed_cap", []);
     public static readonly PixelType Decay = new((24, 24, 24), "decay", [DecayRules.Decay]);
     public static readonly PixelType Rot = new((40, 0, 24), "rot", [DecayRules.Rot]);
+    public static readonly PixelType Bricks = new((64, 32, 32), "bricks", [BrickRules.Fall]);
 }
