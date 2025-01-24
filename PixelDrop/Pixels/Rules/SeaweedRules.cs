@@ -8,7 +8,7 @@ public static class SeaweedRules
 
         if (below == null) return;
 
-        if (!SandRules.CanFallthrough(below))
+        if (!PixelType.NonSolid.Contains(below))
         {
             if (below != PixelType.Sand)
             {

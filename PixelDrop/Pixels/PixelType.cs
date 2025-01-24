@@ -6,7 +6,8 @@ using PixelDrop.Renderer;
 namespace PixelDrop.Pixels;
 
 
-public record PixelType(Vector3i Color, string Name, PixelRule[] Rules){
+public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
+{
     public static readonly PixelType Sand = new((255, 255, 0), "sand", [SandRules.Fall, SandRules.Pile]);
     public static readonly PixelType Water = new((0, 0, 255), "water", [SandRules.Fall, WaterRules.Flow]);
     public static readonly PixelType Erase = new((255, 255, 255), "erase", [EraseRules.Erase]);
@@ -26,4 +27,10 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules){
     public static readonly PixelType Bricks = new((64, 32, 32), "bricks", [BrickRules.Fall]);
     public static readonly PixelType Bird = new((200,200,200), "bird", [BirdRules.Fly]);
     public static readonly PixelType Rainbow = new((0,0,0), "rainbow", [RainbowRules.HueShift]);
+    
+    // Pixels most things count as non solid
+    public static readonly PixelType[] NonSolid = [PixelType.Air, PixelType.Erase,PixelType.Water];
+    
+    
+    public static readonly PixelType[] Airs = [PixelType.Air, PixelType.Erase];
 }

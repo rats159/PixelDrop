@@ -26,7 +26,7 @@ public class World
         Dataless.OfType(PixelType.Static),
         Dataless.OfType(PixelType.Decay),
         Dataless.OfType(PixelType.Bricks),
-        new((_,_,_) => new BirdPixel(PixelType.Bird,new()),PixelType.Bird),
+        new((_,_,_) => new BirdPixel(PixelType.Bird),PixelType.Bird),
         new((_,_,_) => new RainbowPixel(PixelType.Rainbow),PixelType.Rainbow)
     ];
 

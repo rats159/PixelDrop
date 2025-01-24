@@ -2,7 +2,7 @@
 
 namespace PixelDrop.Pixels.Data;
 
-public class BirdPixel(PixelType type, BirdData data) : Pixel(type, data)
+public class BirdPixel(PixelType type) : Pixel(type, new BirdData())
 {
     public override Vector3i GetColor()
     {

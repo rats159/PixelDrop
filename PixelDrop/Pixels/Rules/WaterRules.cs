@@ -1,5 +1,3 @@
-using PixelDrop.Pixels.Data;
-
 namespace PixelDrop.Pixels.Rules;
 
 public static class WaterRules

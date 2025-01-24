@@ -8,7 +8,7 @@ public static class BirdRules
     {
         if (pixel is not BirdPixel bird) throw new ArgumentException("Fly rule cannot be applied to non-birds");
 
-        if (world.GetType(x + bird.Dx, y) != PixelType.Air)
+        if (!PixelType.Airs.Contains(world.GetType(x + bird.Dx, y)))
         {
             bird.Bounce();
         }

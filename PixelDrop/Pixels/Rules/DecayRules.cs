@@ -7,10 +7,10 @@ public static class DecayRules
     private static readonly PixelType[] UnDecayable =
     [
         PixelType.Air, PixelType.Decay,
-        PixelType.Rot,PixelType.Erase, 
+        PixelType.Rot, PixelType.Erase,
     ];
 
-    public static void Decay(int x, int y, World world,Pixel _)
+    public static void Decay(int x, int y, World world, Pixel _)
     {
         (int, int)[] dirs =
         [
@@ -33,12 +33,12 @@ public static class DecayRules
             }
 
             PixelType? neighbor = world.GetType(x + dx, y + dy);
-            if (neighbor == null || DecayRules.IsUnDecayable(neighbor)) continue;
+            if (neighbor == null || DecayRules.UnDecayable.Contains(neighbor)) continue;
             world.Replace(x + dx, y + dy, PixelType.Decay);
         }
     }
 
-    public static void Rot(int x, int y, World world,Pixel _)
+    public static void Rot(int x, int y, World world, Pixel _)
     {
         if (Random.Shared.NextSingle() <= 0.75)
         {
@@ -60,29 +60,9 @@ public static class DecayRules
             PixelType? neighbor = world.GetType(x + dx, y + dy);
             if (neighbor == null) continue;
 
-            if (!DecayRules.StabilizesRot(neighbor)) stable = false;
+            if (!DecayRules.RotStable.Contains(neighbor)) stable = false;
         }
 
         if (stable) world.Replace(x, y, PixelType.Air);
-    }
-
-    private static bool StabilizesRot(PixelType type)
-    {
-        for (int i = 0; i < DecayRules.RotStable.Length; i++)
-        {
-            if (DecayRules.RotStable[i] == type) return true;
-        }
-
-        return false;
-    }
-
-    private static bool IsUnDecayable(PixelType type)
-    {
-        for (int i = 0; i < DecayRules.UnDecayable.Length; i++)
-        {
-            if (DecayRules.UnDecayable[i] == type) return true;
-        }
-
-        return false;
     }
 }
