@@ -2,9 +2,9 @@
 
 public static class SeaweedRules
 {
-    public static void Fall(int x, int y, World world)
+    public static void Fall(int x, int y, World world,Pixel _)
     {
-        PixelType? below = world.Get(x, y + 1);
+        PixelType? below = world.GetType(x, y + 1);
 
         if (below == null) return;
 
@@ -22,9 +22,9 @@ public static class SeaweedRules
         }
     }
 
-    public static void Grow(int x, int y, World world)
+    public static void Grow(int x, int y, World world,Pixel _)
     {
-        PixelType? above = world.Get(x, y - 1);
+        PixelType? above = world.GetType(x, y - 1);
 
         if (above == null) return;
 

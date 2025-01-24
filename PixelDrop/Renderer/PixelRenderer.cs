@@ -26,17 +26,17 @@ public class PixelRenderer
         this._shader = shader;
     }
 
-    public void Render(Pixels.PixelType[] world)
+    public void Render(Pixel[] world)
     {
         this.PrepareTexture(world);
         this.DrawQuad();
     }
 
-    private void PrepareTexture(Pixels.PixelType[] world)
+    private void PrepareTexture(Pixel[] world)
     {
         for (int i = 0; i < world.Length; i++)
         {
-            Vector3i color = world[i].Color;
+            Vector3i color = world[i].GetColor();
             this._textureData[i * 3] = (byte)color.X;
             this._textureData[i * 3 + 1] = (byte)color.Y;
             this._textureData[i * 3 + 2] = (byte)color.Z;

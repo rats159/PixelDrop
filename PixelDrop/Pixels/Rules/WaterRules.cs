@@ -1,11 +1,13 @@
+using PixelDrop.Pixels.Data;
+
 namespace PixelDrop.Pixels.Rules;
 
 public static class WaterRules
 {
-    public static void Flow(int x, int y, World world)
+    public static void Flow(int x, int y, World world,Pixel _)
     {
-        PixelType? left = world.Get(x - 1, y);
-        PixelType? right = world.Get(x + 1, y);
+        PixelType? left = world.GetType(x - 1, y);
+        PixelType? right = world.GetType(x + 1, y);
 
         bool canGoLeft = left != null && left == PixelType.Air;
         bool canGoRight = right != null && right == PixelType.Air;

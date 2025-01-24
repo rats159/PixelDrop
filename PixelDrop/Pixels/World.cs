@@ -1,5 +1,6 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using PixelDrop.Input;
+using PixelDrop.Pixels.Data;
 using PixelDrop.Pixels.Rules;
 using PixelDrop.Renderer;
 
@@ -11,12 +12,22 @@ public class World
     public const int WIDTH = 800 / World.PIXEL_SIZE;
     public const int HEIGHT = 800 / World.PIXEL_SIZE;
 
-    private PixelType[] _newGrid = new PixelType[World.HEIGHT * World.WIDTH];
-    private PixelType[] _oldGrid = new PixelType[World.HEIGHT * World.WIDTH];
+    private Pixel[] _newGrid = new Pixel[World.HEIGHT * World.WIDTH];
+    private Pixel[] _oldGrid = new Pixel[World.HEIGHT * World.WIDTH];
     private PixelRenderer? _pixelRenderer;
 
     private int _pixelIndex;
-    private readonly PixelType[] _pixelTypes = [PixelType.Sand,PixelType.Water,PixelType.SeaweedSeed,PixelType.Static,PixelType.Decay, PixelType.Bricks,  ];
+
+    private readonly PixelFactory[] _pixelFactories =
+    [
+        Dataless.OfType(PixelType.Sand),
+        Dataless.OfType(PixelType.Water),
+        Dataless.OfType(PixelType.SeaweedSeed),
+        Dataless.OfType(PixelType.Static),
+        Dataless.OfType(PixelType.Decay),
+        Dataless.OfType(PixelType.Bricks),
+        new((_) => new BirdPixel(PixelType.Bird,new()),PixelType.Bird)
+    ];
 
     private int _brushSize = 1;
 
@@ -37,8 +48,8 @@ public class World
         {
             for (int j = 0; j < World.WIDTH; j++)
             {
-                this._newGrid[i * World.WIDTH + j] = PixelType.Air;
-                this._oldGrid[i * World.WIDTH + j] = PixelType.Air;
+                this._newGrid[i * World.WIDTH + j] = new DatalessPixel(PixelType.Air);
+                this._oldGrid[i * World.WIDTH + j] = new DatalessPixel(PixelType.Air);
             }
         }
     }
@@ -49,34 +60,39 @@ public class World
         if (this._brushSize < 1)
         {
             this._brushSize = 1;
-        } 
+        }
+
         Console.WriteLine($"Brush size: {this._brushSize}");
     }
 
     private void ChangeSelectedPixel(int delta)
     {
-        int numPixelTypes = this._pixelTypes.Length;
+        int numPixelTypes = this._pixelFactories.Length;
         this._pixelIndex += delta;
-            
+
         // Python-style modulo, where negative indices wrap around;
         this._pixelIndex = (this._pixelIndex % numPixelTypes + numPixelTypes) % numPixelTypes;
-        Console.WriteLine($"Now Drawing: {this._pixelTypes[this._pixelIndex].Name}");
-
+        Console.WriteLine($"Now Drawing: {this._pixelFactories[this._pixelIndex].Type.Name}");
     }
 
     public void Spawn(int x, int y, PixelType type)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
-        if (this._newGrid[y * World.WIDTH + x] != PixelType.Air) return;
+        if (this._newGrid[y * World.WIDTH + x].type != PixelType.Air) return;
 
-        this.Replace(x,y,type);
+        this.Replace(x, y, type);
     }
-    
+
     public void Replace(int x, int y, PixelType type)
+    {
+        this.Replace(x, y, new DatalessPixel(type));
+    }
+
+    public void Replace(int x, int y, Pixel pix)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
 
-        this._oldGrid[y * World.WIDTH + x] = type;
+        this._oldGrid[y * World.WIDTH + x] = pix;
     }
 
     public void Swap(int x1, int y1, int x2, int y2)
@@ -85,10 +101,15 @@ public class World
             this._oldGrid[y2 * World.WIDTH + x2], this._oldGrid[y1 * World.WIDTH + x1]);
     }
 
-    public PixelType? Get(int x, int y)
+    public Pixel? Get(int x, int y)
     {
         if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return null;
         return this._newGrid[y * World.WIDTH + x];
+    }
+
+    public PixelType? GetType(int x, int y)
+    {
+        return this.Get(x, y)?.type;
     }
 
     private void Draw()
@@ -99,11 +120,12 @@ public class World
         {
             for (int drawY = y; drawY < y + this._brushSize; drawY++)
             {
-                this.Replace(drawX - this._brushSize/2, drawY - this._brushSize/2, this._pixelTypes[this._pixelIndex]);
+                this.Replace(drawX - this._brushSize / 2, drawY - this._brushSize / 2,
+                    this._pixelFactories[this._pixelIndex].FactoryFunc(this));
             }
         }
     }
-    
+
     private void Erase()
     {
         int x = (int)Mouse.State.X / World.PIXEL_SIZE;
@@ -116,33 +138,33 @@ public class World
                 int arrY = drawY - this._brushSize / 2;
                 if (arrX < 0 || arrX >= World.WIDTH || arrY < 0 || arrY >= World.HEIGHT) continue;
 
-                this._newGrid[arrY * World.WIDTH + arrX] = PixelType.Erase;
+                this._newGrid[arrY * World.WIDTH + arrX] = new DatalessPixel(PixelType.Erase);
             }
         }
     }
-    
+
     public void Tick()
     {
         for (int y = 0; y < World.HEIGHT; y++)
         {
             for (int x = 0; x < World.WIDTH; x++)
             {
-                PixelType pixel = this._newGrid[y * World.WIDTH + x];
-                foreach (PixelRule rule in pixel.Rules)
+                Pixel pixel = this._newGrid[y * World.WIDTH + x];
+                foreach (PixelRule rule in pixel.type.Rules)
                 {
-                    rule(x, y, this);
+                    rule(x, y, this, pixel);
                 }
             }
         }
 
         this._newGrid = this._oldGrid;
-        this._oldGrid = (PixelType[])this._oldGrid.Clone(); // TODO: Surely there's a better way
-        
+        this._oldGrid = (Pixel[])this._oldGrid.Clone(); // TODO: Surely there's a better way
+
         if (Mouse.State.IsButtonDown(Mouse.LEFT))
         {
             this.Draw();
         }
-        
+
         if (Mouse.State.IsButtonDown(Mouse.RIGHT))
         {
             this.Erase();

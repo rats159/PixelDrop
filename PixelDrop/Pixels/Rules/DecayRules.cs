@@ -10,7 +10,7 @@ public static class DecayRules
         PixelType.Rot,PixelType.Erase, 
     ];
 
-    public static void Decay(int x, int y, World world)
+    public static void Decay(int x, int y, World world,Pixel _)
     {
         (int, int)[] dirs =
         [
@@ -32,13 +32,13 @@ public static class DecayRules
                 continue;
             }
 
-            PixelType? neighbor = world.Get(x + dx, y + dy);
+            PixelType? neighbor = world.GetType(x + dx, y + dy);
             if (neighbor == null || DecayRules.IsUnDecayable(neighbor)) continue;
             world.Replace(x + dx, y + dy, PixelType.Decay);
         }
     }
 
-    public static void Rot(int x, int y, World world)
+    public static void Rot(int x, int y, World world,Pixel _)
     {
         if (Random.Shared.NextSingle() <= 0.75)
         {
@@ -57,7 +57,7 @@ public static class DecayRules
 
         foreach ((int dx, int dy) in dirs)
         {
-            PixelType? neighbor = world.Get(x + dx, y + dy);
+            PixelType? neighbor = world.GetType(x + dx, y + dy);
             if (neighbor == null) continue;
 
             if (!DecayRules.StabilizesRot(neighbor)) stable = false;

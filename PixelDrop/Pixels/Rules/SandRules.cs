@@ -4,19 +4,19 @@ public static class SandRules
 {
     private static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water,PixelType.Erase, ];
 
-    public static void Fall(int x, int y, World world)
+    public static void Fall(int x, int y, World world,Pixel _)
     {
-        PixelType? below = world.Get(x, y + 1);
+        PixelType? below = world.GetType(x, y + 1);
 
         if (below == null || !SandRules.CanFallthrough(below)) return;
 
         world.Swap(x, y, x, y + 1);
     }
 
-    public static void Pile(int x, int y, World world)
+    public static void Pile(int x, int y, World world,Pixel _)
     {
-        PixelType? leftDown = world.Get(x - 1, y + 1);
-        PixelType? rightDown = world.Get(x + 1, y + 1);
+        PixelType? leftDown = world.GetType(x - 1, y + 1);
+        PixelType? rightDown = world.GetType(x + 1, y + 1);
 
         bool canGoLeft = leftDown != null && SandRules.CanFallthrough(leftDown);
         bool canGoRight = rightDown != null && SandRules.CanFallthrough(rightDown);

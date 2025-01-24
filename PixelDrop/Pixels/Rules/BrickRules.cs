@@ -4,14 +4,14 @@ public static class BrickRules
 {
     private static readonly PixelType[] Fallthrough = [PixelType.Air, PixelType.Water,PixelType.Erase, ];
 
-    public static void Fall(int x, int y, World world)
+    public static void Fall(int x, int y, World world,Pixel _)
     {
-        PixelType? below = world.Get(x, y + 1);
+        PixelType? below = world.GetType(x, y + 1);
 
         if (below == null || !BrickRules.CanFallthrough(below)) return;
         
-        PixelType? left = world.Get(x-1, y);
-        PixelType? right = world.Get(x+1, y);
+        PixelType? left = world.GetType(x-1, y);
+        PixelType? right = world.GetType(x+1, y);
 
         if (left == PixelType.Bricks) return;
         if (right == PixelType.Bricks) return;

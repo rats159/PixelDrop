@@ -1,15 +1,15 @@
 using OpenTK.Mathematics;
+using PixelDrop.Pixels.Data;
 using PixelDrop.Pixels.Rules;
 using PixelDrop.Renderer;
 
 namespace PixelDrop.Pixels;
 
-public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
-{
+
+public record PixelType(Vector3i Color, string Name, PixelRule[] Rules){
     public static readonly PixelType Sand = new((255, 255, 0), "sand", [SandRules.Fall, SandRules.Pile]);
     public static readonly PixelType Water = new((0, 0, 255), "water", [SandRules.Fall, WaterRules.Flow]);
     public static readonly PixelType Erase = new((255, 255, 255), "erase", [EraseRules.Erase]);
-
     public static readonly PixelType SandSpawner =
         new((255, 255, 255), "sand_spawner", [SpawnerRules.MakeSpawner(PixelType.Sand)]);
 
@@ -24,4 +24,5 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
     public static readonly PixelType Decay = new((24, 24, 24), "decay", [DecayRules.Decay]);
     public static readonly PixelType Rot = new((40, 0, 24), "rot", [DecayRules.Rot]);
     public static readonly PixelType Bricks = new((64, 32, 32), "bricks", [BrickRules.Fall]);
+    public static readonly PixelType Bird = new((200,200,200), "bird", [BirdRules.Fly]);
 }
