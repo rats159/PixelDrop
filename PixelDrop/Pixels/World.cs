@@ -47,6 +47,14 @@ public class World
         this._newGrid[y * World.WIDTH + x] = type;
         this._oldGrid[y * World.WIDTH + x] = type;
     }
+    
+    public void Replace(int x, int y, PixelType type)
+    {
+        if (x < 0 || x >= World.WIDTH || y < 0 || y >= World.HEIGHT) return;
+
+        this._newGrid[y * World.WIDTH + x] = type;
+        this._oldGrid[y * World.WIDTH + x] = type;
+    }
 
     private void Unset(int x, int y)
     {
@@ -70,6 +78,7 @@ public class World
 
     public void Tick()
     {
+        Console.WriteLine(this._pixelTypes[this._pixelIndex].Name);
         if (Mouse.State.IsButtonDown(Mouse.LEFT))
         {
             int x = (int)Mouse.State.X / World.PIXEL_SIZE;

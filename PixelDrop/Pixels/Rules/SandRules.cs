@@ -33,7 +33,7 @@ public static class SandRules
         world.Swap(x, y, x + offset, y + 1);
     }
 
-    private static bool CanFallthrough(PixelType type)
+    public static bool CanFallthrough(PixelType type)
     {
         for (int i = 0; i < SandRules.Fallthrough.Length; i++)
         {

@@ -16,5 +16,7 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules)
         new((255, 255, 255), "water_spawner", [SpawnerRules.MakeSpawner(PixelType.Water)]);
 
     public static readonly PixelType Air = new((0, 0, 20), "air", []);
-    public static readonly PixelType SeaweedSeed = new((68, 38, 8), "seaweed_seed", [SandRules.Fall]);
+    public static readonly PixelType SeaweedSeed = new((68, 38, 8), "seaweed_seed", [SeaweedRules.Fall]);
+    public static readonly PixelType Seaweed = new((0, 128, 0), "seaweed", [SeaweedRules.Grow]);
+    public static readonly PixelType SeaweedCap = new((0, 64, 0), "seaweed_cap", []);
 }
