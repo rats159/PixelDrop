@@ -27,7 +27,7 @@ public class World
         Dataless.OfType(PixelType.Decay),
         Dataless.OfType(PixelType.Bricks),
         new((_,_,_) => new BirdPixel(PixelType.Bird,new()),PixelType.Bird),
-        new((_,x,y) => new RainbowPixel(PixelType.Rainbow,x,y),PixelType.Rainbow)
+        new((_,_,_) => new RainbowPixel(PixelType.Rainbow),PixelType.Rainbow)
     ];
 
     private int _brushSize = 1;

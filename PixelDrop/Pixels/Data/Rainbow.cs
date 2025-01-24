@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace PixelDrop.Pixels.Data;
 
-public class RainbowPixel(PixelType type, int x, int y) : Pixel(type, new RainbowData(x, y))
+public class RainbowPixel(PixelType type) : Pixel(type, new RainbowData())
 {
     public override Vector3i GetColor()
     {
@@ -17,16 +17,16 @@ public class RainbowPixel(PixelType type, int x, int y) : Pixel(type, new Rainbo
     }
 }
 
-public class RainbowData(int x, int y) : IPixelData
+public class RainbowData : IPixelData
 {
     public float hue;
 
     public Vector3i GetColor()
     {
-        return this.Hsl(this.hue % 1f, 1, .5f);
+        return RainbowData.Hsl(this.hue % 1f, 1, .5f);
     }
 
-    private Vector3i Hsl(float h, float s, float l)
+    private static Vector3i Hsl(float h, float s, float l)
     {
         float q = l < 0.5f ? l * (1 + s) : l + s - l * s;
         float p = 2 * l - q;
@@ -38,7 +38,7 @@ public class RainbowData(int x, int y) : IPixelData
         if (r < 0) r = 0;
         if (g < 0) g = 0;
         if (b < 0) b = 0;
-        // Convert to 0-255 range
+
         return ((int)(r * 255), (int)(g * 255), (int)(b * 255));
     }
 
