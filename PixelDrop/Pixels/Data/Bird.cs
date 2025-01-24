@@ -11,10 +11,10 @@ public class BirdPixel(PixelType type, BirdData data) : Pixel(type, data)
     
     public void Bounce()
     {
-        data.Bounce();
+        ((BirdData)this.data).Bounce();
     }
 
-    public int Dx => data.Dx;
+    public int Dx => ((BirdData)this.data).Dx;
 }
 
 public class BirdData : IPixelData

@@ -25,4 +25,5 @@ public record PixelType(Vector3i Color, string Name, PixelRule[] Rules){
     public static readonly PixelType Rot = new((40, 0, 24), "rot", [DecayRules.Rot]);
     public static readonly PixelType Bricks = new((64, 32, 32), "bricks", [BrickRules.Fall]);
     public static readonly PixelType Bird = new((200,200,200), "bird", [BirdRules.Fly]);
+    public static readonly PixelType Rainbow = new((0,0,0), "rainbow", [RainbowRules.HueShift]);
 }

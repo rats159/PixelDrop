@@ -26,7 +26,8 @@ public class World
         Dataless.OfType(PixelType.Static),
         Dataless.OfType(PixelType.Decay),
         Dataless.OfType(PixelType.Bricks),
-        new((_) => new BirdPixel(PixelType.Bird,new()),PixelType.Bird)
+        new((_,_,_) => new BirdPixel(PixelType.Bird,new()),PixelType.Bird),
+        new((_,x,y) => new RainbowPixel(PixelType.Rainbow,x,y),PixelType.Rainbow)
     ];
 
     private int _brushSize = 1;
@@ -120,8 +121,10 @@ public class World
         {
             for (int drawY = y; drawY < y + this._brushSize; drawY++)
             {
-                this.Replace(drawX - this._brushSize / 2, drawY - this._brushSize / 2,
-                    this._pixelFactories[this._pixelIndex].FactoryFunc(this));
+                int arrX = drawX - this._brushSize / 2;
+                int arrY = drawY - this._brushSize / 2;
+                this.Replace(arrX, arrY,
+                    this._pixelFactories[this._pixelIndex].FactoryFunc(this,arrX,arrY));
             }
         }
     }

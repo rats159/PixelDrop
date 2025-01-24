@@ -14,7 +14,7 @@ public class Dataless : IPixelData
 {
     public static PixelFactory OfType(PixelType type)
     {
-        return new(_ => new DatalessPixel(type),type);
+        return new((_,_,_) => new DatalessPixel(type),type);
     }
     public static Dataless Instance { get; } = new();
     
